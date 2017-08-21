@@ -1,0 +1,25 @@
+#!/usr/bin/expect
+set env(TERM) xterm
+set numer [lindex $argv 0]
+set wiadomosc [lindex $argv 1]
+
+spawn su
+expect "assword:"
+send "orangepi\r"
+expect "#"
+spawn screen -S smsservice$numer /dev/ttyS3 38400
+expect ""
+expect sleep 1
+send "AT\r"
+expect "OK"
+send "AT+CREG?\r"
+expect "OK" {send "AT+CMGF=1\r"}
+expect "OK" {send "AT+CSCS=\"GSM\"\r"}
+expect "OK" {send "AT+CMGS=\"";send $numer;send "\"\r"}
+expect ">" {send $wiadomosc}
+expect "" {send "\x1A"}
+expect sleep 10
+send "\x01d"
+expect sleep 3
+spawn screen -X -S smsservice$numer kill
+expect EOF
