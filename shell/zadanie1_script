@@ -3,10 +3,6 @@ set env(TERM) xterm
 set numer [lindex $argv 0]
 set wiadomosc [lindex $argv 1]
 
-spawn su
-expect "assword:"
-send "orangepi\r"
-expect "#"
 spawn screen -S smsservice$numer /dev/ttyS3 38400
 expect ""
 expect sleep 1
